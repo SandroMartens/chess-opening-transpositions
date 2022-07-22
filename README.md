@@ -27,7 +27,7 @@ I analyzed 339,024 games between pro players from Lichess from April 2022. The o
 
 The resulting matrix is visualized with `Gephi`. The layout algorithm works so that connected nodes attract and not connected nodes repell each other. After a while we get a stable configuration where strongly connected groups emerge.
 
-Tp get the colors I used the modularity algorithm. Modularity is a measure of how well connected nodes in a graph are. So we can find groups of nodes that are better connected to each other than to the rest of the graph. Each color is a group. The size of a node is determinded by the number it has been reached. Same is true for the thickness of the edges.
+To get the colors I used the modularity algorithm. Modularity is a measure of how well connected nodes in a graph are. So we can find groups of nodes that are better connected to each other than to the rest of the graph. Each represents such a group. The size of a node is determinded by the number it has been reached. Same is true for the thickness of the edges.
 
 ## Results
 
@@ -37,15 +37,17 @@ Each color represents one or more opening families:
 Color | Openings
 --- | ---
 Orange | Queen's Gambit
-Green | Indian, Gründfeld, Benoni Defense(s)
+Green | Indian, Grünfeld, Benoni Defense(s)
 Red | Zukertort, English, Réti Opening
 Black | Sicilian Defense
 Blue | King's Pawn: Caro-Kann, French, Modern, Scandinavian, Pirc, Alekhine Defense
 Pink | King's Pawn: Scotch, Italian, Russian, Vienna Game, King's Gambit, Ruy Lopez
+Grey | Noise, unregular openings, weird gambits
 
 
 ## Conclusions
 
+It's said that transpositions are more frequently and important in Queen's Pawn Games than in King's Pawn Games. Using our graph we can confirm this. In particular the English and the Zukertort Opening often transpose into other lines. 
 
 ## Data
 
