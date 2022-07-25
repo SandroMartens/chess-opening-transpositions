@@ -55,6 +55,7 @@ Now we look at each group individually. I filtered nodes with very low number of
 ![black](/images/black.png)
 ![pink](/images/pink.png)
 ![blue](/images/blue.png)
+![green2](images/green2.png)
 
 ## Conclusions
 
