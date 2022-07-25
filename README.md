@@ -7,11 +7,15 @@ The opening of a chess game is the initial stage of the game. Both players devel
 
 For example, there are two move orders to reach the Queen's Gambit:
 
+### Main Line
+
 Move | Opening Name
 --- | ---
 1\. d4 | Queen's Pawn game
 1\. ... d5 | Closed Game
 2\. c4 | Queen's Gambit
+
+### Transposition from English Opening
 
 Move | Opening Name
 --- | ---
@@ -19,7 +23,7 @@ Move | Opening Name
 1\. ... d5 | Anglo-Scandinavian Defense
 2\. d4 | Queen's Gambit
 
-We transposed from the English Opening to a Queen's Gambit. The first order is considered solid and played very often. The second is considered unsound and therefore (almost) not played by pro players. If we analyze many chess games, we can build a graph were each node is a known opening position and edges are transpositions between openings (or opening variants).
+The first order is considered solid and played very often. The second is considered unsound and therefore (almost) not played by pro players. If we analyze many chess games, we can build a graph were each node is a known opening position and edges are transpositions between openings (or opening variants).
 
 ## Methology
 
@@ -33,7 +37,7 @@ To get the colors I used the modularity algorithm. Modularity is a measure of ho
 
 ### Overview
 
-First we see the entire graph. We can clearly see a few very distinct groups and some groups that are very similar and not distinguishable.
+First we see the entire graph. We can clearly see a few very distinct groups and some groups that are very similar and not distinguishable. There are 2479 nodes total, connected by 6503 edges.
 ![Complete_graph](/images/complete.png)
 Each color represents one or more opening families:
 Color | Openings
@@ -49,8 +53,8 @@ Grey | Noise, unregular openings, weird gambits
 
 ### Detail view
 
-Now we look at each group individually. I filtered nodes with very low number of occurrences out so that we can see some of the variation names. Each subgraph again is run through the gephi force atlas algorithm.
-![orange](/images/orange.png | width=100)
+Now we look at each group individually. I filtered nodes with very low number of occurrences out so that we can see some of the variation names. Each subgraph again is run through the force atlas algorithm with Gephi.
+![orange](/images/orange.png)
 ![green](/images/green.png)
 ![red](/images/red.png)
 ![black](/images/black.png)
@@ -60,7 +64,7 @@ Now we look at each group individually. I filtered nodes with very low number of
 
 ## Conclusions
 
-First, there is e clear distinction between Queen's Pawn Games on the left and King's Pawn Games on the right. It's said that transpositions are more frequently and important in Queen's Pawn Games than in King's Pawn Games. Using our graph we can confirm this. In particular the English and the Zukertort Opening often transpose into other lines of the Queens Gambit or some Indian defense. Using graph theory, we confirmed that strongly connected nodes in the graph are indeed variations of the same openings.
+Using graph theory, we confirmed that strongly connected nodes in the graph are indeed variations of the same openings. There is e clear distinction between Queen's Pawn Games on the left and King's Pawn Games on the right. It's said that transpositions are more frequently and important in Queen's Pawn Games than in King's Pawn Games. Using the graph we can confirm this. In particular the English and the Zukertort Opening often transpose into other lines of the Queens Pawn Game or Indian Defense.
 
 ## Data
 
@@ -68,4 +72,6 @@ I used the opening data from [Lichess](https://github.com/lichess-org/chess-open
 
 [^1]: A unique position of the pieces on the board.
 
-The games are downloaded from the [Lichess Elite Database](https://database.nikonoel.fr/). I used the file from April 2022. The file is in `pgn` format. PGN files contain headers with metadata and the list of the moves in the game in Short Algebraic Notation. All players had a rating > 2400.
+The games are downloaded from the [Lichess Elite Database](https://database.nikonoel.fr/). I used the file from April 2022. The file is in `pgn` format. PGN files contain one or more chess games. Each game has a header with metadata and the list of the moves in the game in Short Algebraic Notation. All players had a rating > 2400.
+
+I changed the name of the position after 1. d4 d5 from Queen's Pawn Game to Closed Game to get some differentiation to other 1. d4 lines. 
