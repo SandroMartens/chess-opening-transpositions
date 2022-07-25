@@ -3,7 +3,7 @@
 
 ## Idea
 
-The opening of a chess game is the initial stage of the game. Both players develop their pieces and try to prepare their middle game. Many openings have standard names, such as _Sicilian Defence_. Opening positions are defined by a given _position_ on the board. A game _transposes_ to a different opening, if it reaches a position which is normally reached by a different move order. In professional chess, opening transpositions are used to avoid certain lines, trick your opponent or force the opponent to play something unfamiliar.
+The opening of a chess game is the initial stage of the game. Both players develop their pieces and try to prepare their middle game. Many openings have standard names, such as _Sicilian Defence_ or _Russian Game_. Opening positions are defined by a given _position_ on the board. A game _transposes_ to a different opening, if it reaches a position which is normally reached by a different move order. In professional chess, opening transpositions are used to avoid certain lines, trick your opponent or force the opponent to play something unfamiliar.
 
 For example, there are two move orders to reach the Queen's Gambit:
 
@@ -31,6 +31,8 @@ To get the colors I used the modularity algorithm. Modularity is a measure of ho
 
 ## Results
 
+### Overview
+
 First we see the entire graph. We can clearly see a few very distinct groups and some groups that are very similar and not distinguishable.
 ![Complete_graph](/images/complete.png)
 Each color represents one or more opening families:
@@ -44,10 +46,19 @@ Blue | King's Pawn: Caro-Kann, French, Modern, Scandinavian, Pirc, Alekhine Defe
 Pink | King's Pawn: Scotch, Italian, Russian, Vienna Game, King's Gambit, Ruy Lopez
 Grey | Noise, unregular openings, weird gambits
 
+### Detail view
+
+Now we look at each group individually. I filtered nodes with very low number of occurrences out so that we can see some of the variation names.
+![orange](/images/orange.png)
+![green](/images/green.png)
+![red](/images/red.png)
+![black](/images/black.png)
+![pink](/images/pink.png)
+![blue](/images/blue.png)
 
 ## Conclusions
 
-It's said that transpositions are more frequently and important in Queen's Pawn Games than in King's Pawn Games. Using our graph we can confirm this. In particular the English and the Zukertort Opening often transpose into other lines. 
+First, there is e clear distinction between Queen's Pawn Games on the left and King's Pawn Games on the right. It's said that transpositions are more frequently and important in Queen's Pawn Games than in King's Pawn Games. Using our graph we can confirm this. In particular the English and the Zukertort Opening often transpose into other lines of the Queens Gambit or some Indian defense. Using graph theory, we confirmed that strongly connected nodes in the graph are indeed variations of the same openings.
 
 ## Data
 
