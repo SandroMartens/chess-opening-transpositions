@@ -25,7 +25,7 @@ We transposed from the English Opening to a Queen's Gambit. The first order is c
 
 I analyzed 339,024 games between pro players from Lichess from April 2022. The opening data was the same as used in the opening explorer of Lichess. I parsed the games with `python-chess` and extracted the epd of the first 15 full moves. I then checked if this epd has a name. If the current position has a name that is different from the previous position, I added a transposition between the old and the new position.
 
-The resulting matrix is visualized with `Gephi`. The layout algorithm works so that connected nodes attract and not connected nodes repell each other. After a while we get a stable configuration where strongly connected groups emerge.
+The resulting graph is visualized with `Gephi`. The layout algorithm works so that connected nodes attract and not connected nodes repell each other. After a while we get a stable configuration where groups of strongly connected nodes emerge.
 
 To get the colors I used the modularity algorithm. Modularity is a measure of how well connected nodes in a graph are. So we can find groups of nodes that are better connected to each other than to the rest of the graph. Each represents such a group. The size of a node is determinded by the number it has been reached. Same is true for the thickness of the edges.
 
@@ -40,6 +40,7 @@ Color | Openings
 --- | ---
 Orange | Queen's Gambit
 Green | Indian, Grünfeld, Benoni Defense(s)
+Dark Green | Caro-Kann
 Red | Zukertort, English, Réti Opening
 Black | Sicilian Defense
 Blue | King's Pawn: Caro-Kann, French, Modern, Scandinavian, Pirc, Alekhine Defense
@@ -48,8 +49,8 @@ Grey | Noise, unregular openings, weird gambits
 
 ### Detail view
 
-Now we look at each group individually. I filtered nodes with very low number of occurrences out so that we can see some of the variation names.
-![orange](/images/orange.png)
+Now we look at each group individually. I filtered nodes with very low number of occurrences out so that we can see some of the variation names. Each subgraph again is run through the gephi force atlas algorithm.
+![orange](/images/orange.png | width=100)
 ![green](/images/green.png)
 ![red](/images/red.png)
 ![black](/images/black.png)
