@@ -3,7 +3,7 @@
 
 ## Idea
 
-The opening of a chess game is the initial stage of the game. Both players develop their pieces and try to prepare their middle game. Many openings have standard names, such as _Sicilian Defense_ or _Russian Game_. Opening positions are defined by a given _position_ on the board. A game _transposes_ to a different opening, if it reaches a position which is normally reached by a different move order. In professional chess, opening transpositions are used to avoid certain lines, trick your opponent or force the opponent to play something unfamiliar.
+The opening of a chess game is the initial stage of the game. Both players develop their pieces and try to prepare their middle game. Many openings have standard names, such as _Sicilian Defense_ or _Russian Game_. Opening positions are defined by a given _position_ on the board. A game _transposes_ to a different opening, if it reaches a position which is normally reached by a different move order. In professional chess, opening transpositions are used to avoid certain lines, trick your opponent or force the opponent to play an unfamiliar position.
 
 For example, there are two move orders to reach the Queen's Gambit:
 
@@ -69,7 +69,7 @@ Now we look at each group individually. I filtered nodes with very low number of
 
 ## Conclusions
 
-Using graph theory, we confirmed that strongly connected nodes in the graph are indeed variations of the same openings. There is e clear distinction between Queen's Pawn Games on the left and King's Pawn Games on the right. It's said that transpositions are more frequently and important in Queen's Pawn Games than in King's Pawn Games. Using the graph we can confirm this. In particular the English and the Zukertort Opening often transpose into other lines of the Queens Pawn Game or Indian Defense.
+Using graph theory, we confirmed that strongly connected nodes in the graph are indeed variations of the same openings. There is e clear distinction between Queen's Pawn Games on the left and King's Pawn Games on the right. It's said that transpositions are more frequently and important in Queen's Pawn Games than in King's Pawn Games. Using the graph we can confirm this. In particular the English and the Zukertort Opening often transpose into other lines of the Queen's Pawn Game or Indian Defense.
 
 There are ~3300 named opening positions in the Lichess Database. I was surprised to see 2500 of them in only one snapshot of one month.
 
