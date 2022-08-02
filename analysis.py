@@ -129,10 +129,7 @@ def get_adjacency_matrix(
         for ply in range(positions.shape[1]):
             epd = positions.iloc[game, ply]
             new_opening_name = get_opening_name(epd, openings)
-            if (
-                new_opening_name != None
-                and new_opening_name != last_opening_name
-            ):
+            if new_opening_name is not None and new_opening_name != last_opening_name:
                 adjacency_matrix.loc[last_opening_name, new_opening_name] += 1
                 last_opening_name = new_opening_name
 
@@ -173,6 +170,7 @@ def save_results(adjacency_matrix: pd.DataFrame, n_games: int) -> None:
 
 # %%
 def main():
+    """Main function"""
     N_GAMES = 100
     FILENAME = "files/lichess_elite_2022-04.pgn"
     OPENINGS = load_opening_data()
