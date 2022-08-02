@@ -1,15 +1,16 @@
 # %%
 from typing import Iterator, Optional
+import io
 import pandas as pd
 import chess.pgn
 from tqdm import tqdm
 from numpy import int32
-import io
 
 
 # %%
 def load_opening_data() -> pd.DataFrame:
-    """Return a dataframe with the opening data. All openings have a position and a name. Data is downloaded from https://github.com/lichess-org/chess-openings."""
+    """Return a dataframe with the opening data. All openings have a position and a name.
+    Data is downloaded from https://github.com/lichess-org/chess-openings."""
     ECO_A = pd.read_csv("files/a.tsv", sep="\t", index_col="epd")
     ECO_B = pd.read_csv("files/b.tsv", sep="\t", index_col="epd")
     ECO_C = pd.read_csv("files/c.tsv", sep="\t", index_col="epd")
@@ -40,7 +41,8 @@ def load_opening_data() -> pd.DataFrame:
 
 
 def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:
-    """Replace opening names with their abbreviations and delete "opening", "variation" and "game" and "defense" from the end of the name"""
+    """Replace opening names with their abbreviations and delete "opening", "variation"
+    and "game" and "defense" from the end of the name"""
     ABBREVIATIONS = {
         "King's Indian Attack": "KIA",
         "King's Indian Defense": "KID",
@@ -52,17 +54,17 @@ def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:
         "King's Gambit Accepted": "KGA",
         "Ruy Lopez": "RL",
     }
-    for i in range(openings.shape[0]):
-        name = openings.name[i]
-        for abbreviation in ABBREVIATIONS:
-            if abbreviation in name:
-                name = name.replace(abbreviation, ABBREVIATIONS[abbreviation])
-        name = (
-            name.replace(" Opening", "")
-            .replace(" Variation", "")
-            .replace(" Game", "")
-            .replace(" Defense", "")
-        )
+
+    for i, name in enumerate(openings.name):
+        for long_name, short_name in ABBREVIATIONS.items():
+            if long_name in name:
+                name = name.replace(long_name, short_name)
+            name = (
+                name.replace(" Opening", "")
+                .replace(" Variation", "")
+                .replace(" Game", "")
+                .replace(" Defense", "")
+            )
         openings.name[i] = name
 
     return openings
@@ -97,7 +99,7 @@ def get_positions(games: Iterator[chess.pgn.Game], n_games: int) -> pd.DataFrame
             # Get first 18 Moves = 36 half moves
             try:
                 move = main_line[ply]
-            except:
+            except IndexError:
                 break
             board = move.board()
             positions.append(board.epd())
@@ -110,14 +112,14 @@ def get_opening_name(epd: str, openings) -> Optional[str]:
     """Return opening name from epd, if exists."""
     if epd in openings.index:
         return openings.loc[epd, "name"]
-    else:
-        return None
+    return None
 
 
 def get_adjacency_matrix(
     positions: pd.DataFrame, openings: pd.DataFrame
 ) -> pd.DataFrame:
-    """Iterate over all moves in all games. If a transposition of named openings is found, add 1 to the adjacency matrix between the two openings"""
+    """Iterate over all moves in all games. If a transposition of named openings is
+    found, add 1 to the adjacency matrix between the two openings"""
     unique_names = openings.name.drop_duplicates()
     adjacency_matrix = pd.DataFrame(
         data=0, index=unique_names, columns=unique_names, dtype=int32
@@ -139,7 +141,8 @@ def get_adjacency_matrix(
 
 
 def remove_non_reached_nodes(adjacency_matrix: pd.DataFrame) -> pd.DataFrame:
-    """Remove variations that were not reached. An opening was not reached if it has no incoming edges."""
+    """Remove variations that were not reached. An opening was not reached if it has
+    no incoming edges."""
     # axis=1 for outgoing edges
     # axis=0 for incoming edges
     connected_nodes = adjacency_matrix.loc[(adjacency_matrix != 0).any(axis=0)].index
@@ -181,4 +184,5 @@ def main():
     save_results(adjacency_matrix, N_GAMES)
 
 
-main()
+if __name__ == "__main__":
+    main()

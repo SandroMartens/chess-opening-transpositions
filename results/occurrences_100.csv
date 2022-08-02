@@ -177,15 +177,15 @@ Nimzo-Indian: Sämisch,1
 Grünfeld: Counterthrust,1
 "Indian: King's Indian, Fianchetto",1
 Indian: West Indian,5
-"KID: Fianchetto, Immediate Fianchetto",3
-KID,2
-KID: Normal,3
-"KID: Four Pawns Attack, Dynamic Attack",1
-KID: Sämisch,1
-"KID: Sämisch, Normal",1
-"KID: Sämisch, Sämisch Gambit",1
-"KID: Normal, Rares",1
-KID: Orthodox,1
-"KID: Orthodox, Aronin-Taimanov",1
-"KID: Orthodox, Classical System",1
+"King's Indian: Fianchetto, Immediate Fianchetto",3
+King's Indian,2
+King's Indian: Normal,3
+"King's Indian: Four Pawns Attack, Dynamic Attack",1
+King's Indian: Sämisch,1
+"King's Indian: Sämisch, Normal",1
+"King's Indian: Sämisch, Sämisch Gambit",1
+"King's Indian: Normal, Rares",1
+King's Indian: Orthodox,1
+"King's Indian: Orthodox, Aronin-Taimanov",1
+"King's Indian: Orthodox, Classical System",1
 Start,1
