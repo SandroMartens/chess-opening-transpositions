@@ -140,27 +140,27 @@ Queen's Pawn: Zukertort,2
 Queen's Pawn: Colle System,1
 "Queen's Pawn: Colle System, Traditional Colle",1
 QG,11
-QG Declined: Marshall,1
+QGD: Marshall,1
 Slav,3
 Slav: Modern Line,2
 Slav: Three Knights,1
-QG Accepted,1
-QG Accepted: Showalter,1
-QG Declined,10
-QG Declined: Janowski,1
-QG Declined: Queen's Knight,6
-QG Declined: Exchange,1
-"QG Declined: Exchange, Positional",1
-QG Declined: Harrwitz Attack,1
-QG Declined: Normal,4
-"QG Declined: Harrwitz Attack, Fianchetto",1
-QG Declined: Three Knights,5
-QG Declined: Ragozin,1
-QG Declined: Semi-Tarrasch,2
-"QG Declined: Semi-Tarrasch, Exchange",1
+QGA,1
+QGA: Showalter,1
+QGD,10
+QGD: Janowski,1
+QGD: Queen's Knight,6
+QGD: Exchange,1
+"QGD: Exchange, Positional",1
+QGD: Harrwitz Attack,1
+QGD: Normal,4
+"QGD: Harrwitz Attack, Fianchetto",1
+QGD: Three Knights,5
+QGD: Ragozin,1
+QGD: Semi-Tarrasch,2
+"QGD: Semi-Tarrasch, Exchange",1
 Semi-Slav,2
-QG Declined: Modern,1
-QG Declined: Neo-Orthodox,1
+QGD: Modern,1
+QGD: Neo-Orthodox,1
 "Neo-Grünfeld: Classical, Original",2
 Grünfeld,1
 Grünfeld: Stockholm,1
@@ -177,15 +177,15 @@ Nimzo-Indian: Sämisch,1
 Grünfeld: Counterthrust,1
 "Indian: King's Indian, Fianchetto",1
 Indian: West Indian,5
-"King's Indian: Fianchetto, Immediate Fianchetto",3
-King's Indian,2
-King's Indian: Normal,3
-"King's Indian: Four Pawns Attack, Dynamic Attack",1
-King's Indian: Sämisch,1
-"King's Indian: Sämisch, Normal",1
-"King's Indian: Sämisch, Sämisch Gambit",1
-"King's Indian: Normal, Rares",1
-King's Indian: Orthodox,1
-"King's Indian: Orthodox, Aronin-Taimanov",1
-"King's Indian: Orthodox, Classical System",1
+"KID: Fianchetto, Immediate Fianchetto",3
+KID,2
+KID: Normal,3
+"KID: Four Pawns Attack, Dynamic Attack",1
+KID: Sämisch,1
+"KID: Sämisch, Normal",1
+"KID: Sämisch, Sämisch Gambit",1
+"KID: Normal, Rares",1
+KID: Orthodox,1
+"KID: Orthodox, Aronin-Taimanov",1
+"KID: Orthodox, Classical System",1
 Start,1

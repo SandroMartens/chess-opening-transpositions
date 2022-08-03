@@ -11,7 +11,7 @@ from numpy import int32
 def load_opening_data() -> pd.DataFrame:
     """Return a dataframe with the opening data. All openings have a position and a name.
     Data is downloaded from https://github.com/lichess-org/chess-openings."""
-    ECO_A = pd.read_csv("files/a.tsv", sep="\t", index_col="epd")
+    eco_a = pd.read_csv("files/a.tsv", sep="\t", index_col="epd")
     ECO_B = pd.read_csv("files/b.tsv", sep="\t", index_col="epd")
     ECO_C = pd.read_csv("files/c.tsv", sep="\t", index_col="epd")
     ECO_D = pd.read_csv("files/d.tsv", sep="\t", index_col="epd")
@@ -26,7 +26,7 @@ def load_opening_data() -> pd.DataFrame:
         orient="columns",
     ).set_index("epd")
 
-    OPENINGS = pd.concat([ECO_A, ECO_B, ECO_C, ECO_D, ECO_E, STARTING_POSITION]).drop(
+    OPENINGS = pd.concat([eco_a, ECO_B, ECO_C, ECO_D, ECO_E, STARTING_POSITION]).drop(
         columns=["uci"]
     )
 
@@ -44,14 +44,14 @@ def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:
     """Replace opening names with their abbreviations and delete "opening", "variation"
     and "game" and "defense" from the end of the name"""
     ABBREVIATIONS = {
-        "King's Indian Attack": "KIA",
-        "King's Indian Defense": "KID",
-        "Queen's Gambit": "QG",
         "Queen's Gambit Declined": "QGD",
         "Queen's Gambit Accepted": "QGA",
-        "King's Gambit": "KG",
+        "Queen's Gambit": "QG",
+        "King's Indian Attack": "KIA",
+        "King's Indian Defense": "KID",
         "King's Gambit Declined": "KGD",
         "King's Gambit Accepted": "KGA",
+        "King's Gambit": "KG",
         "Ruy Lopez": "RL",
     }
 
@@ -59,12 +59,12 @@ def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:
         for long_name, short_name in ABBREVIATIONS.items():
             if long_name in name:
                 name = name.replace(long_name, short_name)
-            name = (
-                name.replace(" Opening", "")
-                .replace(" Variation", "")
-                .replace(" Game", "")
-                .replace(" Defense", "")
-            )
+        name = (
+            name.replace(" Opening", "")
+            .replace(" Variation", "")
+            .replace(" Game", "")
+            .replace(" Defense", "")
+        )
         openings.name[i] = name
 
     return openings
