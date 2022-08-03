@@ -1,28 +1,28 @@
 Id,Occurrences
 Amar Gambit,1
 Amar: Paris Gambit,1
-Hungarian,0
+Hungarian,14
 Hungarian: Catalan Formation,2
 Hungarian: Dutch,1
 Hungarian: Indian,3
 Hungarian: Sicilian Invitation,1
-Mieses,0
+Mieses,4
 Mieses: Reversed Rat,1
 Polish,1
-Saragossa,0
-Van Geet,0
-Van't Kruijs,0
-Ware,0
-Nimzo-Larsen Attack,0
+Saragossa,6
+Van Geet,7
+Van't Kruijs,2
+Ware,1
+Nimzo-Larsen Attack,13
 Nimzo-Larsen Attack: Classical,7
 Nimzo-Larsen Attack: Indian,2
 Nimzo-Larsen Attack: Modern,6
 Nimzo-Larsen Attack: Symmetrical,1
-Bird,0
+Bird,7
 Bird: From's Gambit,1
 "Bird: From's Gambit, Lasker",1
 Bird: Dutch,3
-Zukertort,0
+Zukertort,91
 Zukertort: Arctic,1
 Zukertort: Basman,1
 Zukertort: Dutch,3
@@ -46,7 +46,7 @@ KIA: Yugoslav,1
 KIA: French,2
 Réti,8
 Réti: Advance,4
-English,1
+English,88
 English: Anglo-Dutch,1
 English: Anglo-Lithuanian,2
 English: Great Snake,6
@@ -91,7 +91,7 @@ Englund Gambit Complex: Soller Gambit Deferred,3
 Horwitz,9
 Mikenas,2
 Modern,22
-Queen's Pawn,0
+Queen's Pawn,365
 Queen's Pawn: Anglo-Slav,2
 Old Indian,5
 Robatsch,1
@@ -156,7 +156,7 @@ Dutch: Normal,1
 Dutch: Queen's Knight,1
 Dutch: Leningrad,1
 Duras Gambit,1
-King's Pawn,0
+King's Pawn,403
 Lion: Lion's Jaw,2
 Nimzowitsch,5
 Nimzowitsch: Declined,1
@@ -363,6 +363,7 @@ French: Winawer,3
 "French: Winawer, Advance",1
 "French: Winawer, Positional",1
 Center,3
+King's Pawn Game,79
 King's Pawn: Tortoise,1
 Center Accepted,2
 Center: Kieseritzky,1
@@ -372,11 +373,11 @@ Bishop's,2
 Vienna: Max Lange,1
 Vienna: Falkbeer,1
 KG,2
-KG Accepted,2
-KG Accepted: Fischer,1
-KG Accepted: Greco Gambit,1
-KG Accepted: King's Knight's Gambit,2
-KG Accepted: Schallopp,1
+KGA,2
+KGA: Fischer,1
+KGA: Greco Gambit,1
+KGA: King's Knight's Gambit,2
+KGA: Schallopp,1
 Elephant Gambit,2
 Elephant Gambit: Paulsen Countergambit,1
 Gunderam,1
@@ -442,33 +443,33 @@ Italian: Two Knights,10
 "Italian: Two Knights, Knight Attack, Normal",3
 "Italian: Two Knights, Polerio",2
 "Italian: Two Knights, Polerio, Bishop Check Line",2
-Ruy Lopez,21
-Ruy Lopez: Cozio,2
-Ruy Lopez: Schliemann,3
-"Ruy Lopez: Schliemann, Classical",1
-"Ruy Lopez: Schliemann, Dyckhoff",2
-"Ruy Lopez: Schliemann, Tartakower",1
-Ruy Lopez: Berlin,8
-"Ruy Lopez: Berlin, Rio Gambit Accepted",4
-"Ruy Lopez: Berlin, Rosenthal",2
-"Ruy Lopez: Berlin, l'Hermet",1
-"Ruy Lopez: Berlin, l'Hermet, Berlin Wall",1
-Ruy Lopez: Exchange,2
-"Ruy Lopez: Exchange, Alapin Gambit",1
-"Ruy Lopez: Exchange, King's Bishop",1
-"Ruy Lopez: Exchange, Normal",2
-Ruy Lopez: Morphy,8
-"Ruy Lopez: Morphy, Anderssen",1
-"Ruy Lopez: Morphy, Arkhangelsk",1
-"Ruy Lopez: Morphy, Neo-Arkhangelsk",1
-Ruy Lopez: Open,1
-"Ruy Lopez: Open, Main Line",1
-"Ruy Lopez: Open, Howell Attack",1
-Ruy Lopez: Closed,4
-"Ruy Lopez: Closed, Closed",3
-"Ruy Lopez: Closed, Flohr System",1
-"Ruy Lopez: Closed, Smyslov-Breyer-Zaitsev Hybrid",1
-"Ruy Lopez: Closed, Chigorin",1
+RL,21
+RL: Cozio,2
+RL: Schliemann,3
+"RL: Schliemann, Classical",1
+"RL: Schliemann, Dyckhoff",2
+"RL: Schliemann, Tartakower",1
+RL: Berlin,8
+"RL: Berlin, Rio Gambit Accepted",4
+"RL: Berlin, Rosenthal",2
+"RL: Berlin, l'Hermet",1
+"RL: Berlin, l'Hermet, Berlin Wall",1
+RL: Exchange,2
+"RL: Exchange, Alapin Gambit",1
+"RL: Exchange, King's Bishop",1
+"RL: Exchange, Normal",2
+RL: Morphy,8
+"RL: Morphy, Anderssen",1
+"RL: Morphy, Arkhangelsk",1
+"RL: Morphy, Neo-Arkhangelsk",1
+RL: Open,1
+"RL: Open, Main Line",1
+"RL: Open, Howell Attack",1
+RL: Closed,4
+"RL: Closed, Closed",3
+"RL: Closed, Flohr System",1
+"RL: Closed, Smyslov-Breyer-Zaitsev Hybrid",1
+"RL: Closed, Chigorin",1
 Closed,117
 Queen's Pawn: Levitsky Attack,1
 Queen's Pawn: Mason,9
@@ -486,10 +487,10 @@ Queen's Pawn: Torre Attack,1
 Queen's Pawn: Colle System,4
 "Queen's Pawn: Colle System, Traditional Colle",1
 QG,69
-QG Declined: Marshall,2
-QG Declined: Chigorin,1
-"QG Declined: Chigorin, Exchange",1
-"QG Declined: Chigorin, Exchange, Costa's Line",1
+QGD: Marshall,2
+QGD: Chigorin,1
+"QGD: Chigorin, Exchange",1
+"QGD: Chigorin, Exchange, Costa's Line",1
 Slav,31
 Slav: Exchange,3
 Slav: Modern Line,25
@@ -507,44 +508,44 @@ Slav: Czech,2
 "Slav: Czech, Classical System",2
 "Slav: Czech, Classical System, Main Line",1
 "Slav: Czech, Dutch",1
-QG Accepted,21
-"QG Accepted: Central, Alekhine System",2
-QG Accepted: Old,3
-QG Accepted: Saduleto,2
-QG Accepted: Normal,13
-QG Accepted: Alekhine,1
-"QG Accepted: Alekhine, Haberditz",1
-QG Accepted: Showalter,2
-QG Accepted: Classical,4
-"QG Accepted: Classical, Normal Line",4
-"QG Accepted: Classical, Steinitz, Exchange",2
-"QG Accepted: Normal, Traditional System",4
-"QG Accepted: Classical, Main Line",3
-"QG Accepted: Classical, Rubinstein",1
-QG Accepted: Furman,1
-QG Declined,31
-QG Declined: Vienna,4
-QG Declined: Janowski,2
-QG Declined: Queen's Knight,18
-"QG Declined: Semi-Slav, Abrahams",1
+QGA,21
+"QGA: Central, Alekhine System",2
+QGA: Old,3
+QGA: Saduleto,2
+QGA: Normal,13
+QGA: Alekhine,1
+"QGA: Alekhine, Haberditz",1
+QGA: Showalter,2
+QGA: Classical,4
+"QGA: Classical, Normal Line",4
+"QGA: Classical, Steinitz, Exchange",2
+"QGA: Normal, Traditional System",4
+"QGA: Classical, Main Line",3
+"QGA: Classical, Rubinstein",1
+QGA: Furman,1
+QGD,31
+QGD: Vienna,4
+QGD: Janowski,2
+QGD: Queen's Knight,18
+"QGD: Semi-Slav, Abrahams",1
 Semi-Slav: Accelerated Move Order,1
 Semi-Slav: Noteboom,1
-QG Declined: Tarrasch,1
+QGD: Tarrasch,1
 Tarrasch,2
 Tarrasch: Two Knights,1
-QG Declined: Exchange,2
-"QG Declined: Exchange, Positional",2
-QG Declined: Harrwitz Attack,5
-QG Declined: Normal,11
-"QG Declined: Harrwitz Attack, Fianchetto",2
-"QG Declined: Harrwitz Attack, Two Knights",1
-"QG Declined: Harrwitz Attack, Two Knights, Blockade Line",1
-QG Declined: Three Knights,24
-"QG Declined: Vienna, Quiet",1
-QG Declined: Ragozin,6
-"QG Declined: Ragozin, Alekhine",1
-QG Declined: Semi-Tarrasch,4
-"QG Declined: Semi-Tarrasch, Exchange",2
+QGD: Exchange,2
+"QGD: Exchange, Positional",2
+QGD: Harrwitz Attack,5
+QGD: Normal,11
+"QGD: Harrwitz Attack, Fianchetto",2
+"QGD: Harrwitz Attack, Two Knights",1
+"QGD: Harrwitz Attack, Two Knights, Blockade Line",1
+QGD: Three Knights,24
+"QGD: Vienna, Quiet",1
+QGD: Ragozin,6
+"QGD: Ragozin, Alekhine",1
+QGD: Semi-Tarrasch,4
+"QGD: Semi-Tarrasch, Exchange",2
 Semi-Slav,16
 Semi-Slav: Anti-Moscow Gambit,1
 Semi-Slav Accepted,2
@@ -556,14 +557,14 @@ Semi-Slav: Normal,5
 Semi-Slav: Stoltz,3
 Semi-Slav: Meran,2
 Semi-Slav: Semi-Meran,2
-QG Declined: Modern,3
-QG Declined: Cambridge Springs,1
-"QG Declined: Cambridge Springs, Capablanca",1
-QG Declined: Neo-Orthodox,1
-"QG Declined: Orthodox, Main Line",1
-"QG Declined: Orthodox, Bd3 Line",1
-"QG Declined: Orthodox, Fianchetto",1
-"QG Declined: Orthodox, Classical",1
+QGD: Modern,3
+QGD: Cambridge Springs,1
+"QGD: Cambridge Springs, Capablanca",1
+QGD: Neo-Orthodox,1
+"QGD: Orthodox, Main Line",1
+"QGD: Orthodox, Bd3 Line",1
+"QGD: Orthodox, Fianchetto",1
+"QGD: Orthodox, Classical",1
 Neo-Grünfeld: Classical,3
 "Neo-Grünfeld: Classical, Original",9
 Grünfeld,4
@@ -642,3 +643,4 @@ KID: Orthodox,9
 "KID: Orthodox, Aronin-Taimanov",3
 "KID: Orthodox, Bayonet Attack",1
 "KID: Orthodox, Classical System",1
+Start,1

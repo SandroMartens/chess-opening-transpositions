@@ -59,12 +59,13 @@ def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:
         for long_name, short_name in ABBREVIATIONS.items():
             if long_name in name:
                 name = name.replace(long_name, short_name)
-        name = (
-            name.replace(" Opening", "")
-            .replace(" Variation", "")
-            .replace(" Game", "")
-            .replace(" Defense", "")
-        )
+        if name != "King's Pawn Game":
+            name = (
+                name.replace(" Opening", "")
+                .replace(" Variation", "")
+                .replace(" Game", "")
+                .replace(" Defense", "")
+            )
         openings.name[i] = name
 
     return openings
@@ -86,7 +87,7 @@ def load_games(filename: str) -> Iterator[chess.pgn.Game]:
 
 
 def get_positions(games: Iterator[chess.pgn.Game], n_games: int) -> pd.DataFrame:
-    """Get epd positions from the first 15 moves of a given number of games."""
+    """Get epd positions from the first 18 moves of a given number of games."""
     games_positions = []
     for i in tqdm(range(n_games), desc="Extracting positions", unit=" games"):
         try:
@@ -174,7 +175,7 @@ def save_results(adjacency_matrix: pd.DataFrame, n_games: int) -> None:
 # %%
 def main():
     """Main function"""
-    N_GAMES = 100
+    N_GAMES = 340000
     FILENAME = "files/lichess_elite_2022-04.pgn"
     OPENINGS = load_opening_data()
     print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")

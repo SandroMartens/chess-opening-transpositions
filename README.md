@@ -42,27 +42,26 @@ First we see the entire graph. We can clearly see a few very distinct groups and
 Each color represents one or more opening families:
 Color | Openings
 --- | ---
-Orange | Queen's Gambit
+Orange, Yellow | Queen's Pawn: Queen's Gambit, Other Queen's Pawn Games
 Green | Indian, Grünfeld, Benoni Defense(s)
-Dark Green | Caro-Kann
 Red | Zukertort, English, Réti Opening
-Black | Sicilian Defense
-Blue | King's Pawn: Caro-Kann, French, Modern, Scandinavian, Pirc, Alekhine Defense
-Pink | King's Pawn: Scotch, Italian, Russian, Vienna Game, King's Gambit, Ruy Lopez
+Blue | King's Pawn: Pirc, Scandinavian, French, Caro-Kann, Alekhine
+Purple | King's Pawn: Scotch, Italian, Russian, King's Gambit, Ruy Lopez
+Turquoise | Scicilian Defense
 Grey | Noise, unregular openings, weird gambits
 
 ![Complete_graph](/images/complete.png)
 
-If we filter seldom (< 350 times) played variations out, we get a more clear graph:
+If we filter seldom (< 300 times) played variations out, we get a more clear graph:
 ![complete_graph_filtered](/images/complete_filtered.png)
 
 ### Detail view
 
 Now we look at each group individually. I filtered nodes with very low number of occurrences out so that we can see some of the variation names. Each subgraph again is run through the force atlas algorithm with Gephi.
 ![orange](/images/orange.png)
-![green](/images/green.png)
+![yellow](images/yellow.png)
 ![red](/images/red.png)
-![black](/images/black.png)
+![black](/images/türkis.png)
 ![pink](/images/pink.png)
 ![blue](/images/blue.png)
 ![green2](images/green2.png)
