@@ -1,3 +1,6 @@
+"""Analyze transposition in chess openings"""
+
+
 # %%
 from typing import Iterator, Optional
 import io
@@ -35,6 +38,11 @@ def load_opening_data() -> pd.DataFrame:
         "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq -", "name"
     ] = "Closed Game"
 
+    # King's Pawn Game -> Open Game, because later we rename King's Pawn Game to King's Pawn Game
+    OPENINGS.loc[
+        "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -", "name"
+    ] = "Open Game"
+
     OPENINGS = shorten_names(OPENINGS)
 
     return OPENINGS
@@ -59,13 +67,12 @@ def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:
         for long_name, short_name in ABBREVIATIONS.items():
             if long_name in name:
                 name = name.replace(long_name, short_name)
-        if name != "King's Pawn Game":
-            name = (
-                name.replace(" Opening", "")
-                .replace(" Variation", "")
-                .replace(" Game", "")
-                .replace(" Defense", "")
-            )
+        name = (
+            name.replace(" Opening", "")
+            .replace(" Variation", "")
+            .replace(" Game", "")
+            .replace(" Defense", "")
+        )
         openings.name[i] = name
 
     return openings
@@ -75,7 +82,6 @@ def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:
 def load_games(filename: str) -> Iterator[chess.pgn.Game]:
     """Load n games from the pgn file and return them as a list"""
     with open(filename, encoding="utf8") as pgn_file:
-        #  Downloaded from: https://database.nikonoel.fr/
         while True:
             game = chess.pgn.read_game(pgn_file)
             if game is not None:
@@ -126,6 +132,7 @@ def get_adjacency_matrix(
         data=0, index=unique_names, columns=unique_names, dtype=int32
     )
 
+    # So that we dont delete the Start node later
     adjacency_matrix.loc["Start", "Start"] = 1
     for game in tqdm(range(positions.shape[0]), desc="Analyzing games", unit=" games"):
         last_opening_name = "Start"
@@ -175,8 +182,9 @@ def save_results(adjacency_matrix: pd.DataFrame, n_games: int) -> None:
 # %%
 def main():
     """Main function"""
-    N_GAMES = 340000
+    N_GAMES = 100
     FILENAME = "files/lichess_elite_2022-04.pgn"
+    #  Downloaded from: https://database.nikonoel.fr/
     OPENINGS = load_opening_data()
     print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
     games = load_games(FILENAME)
