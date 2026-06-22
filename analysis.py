@@ -1,7 +1,8 @@
 """Analyze transposition in chess openings"""
 
-
 # %%
+import matplotlib.pyplot as plt
+import networkx as nx
 import pandas as pd
 from numpy import int32
 from tqdm import tqdm
@@ -65,7 +66,7 @@ def save_results(adjacency_matrix: pd.DataFrame, n_games: int) -> None:
 def main():
     """Main function"""
     N_GAMES = 100
-    FILENAME = "files/lichess_elite_2022-04.pgn"
+    FILENAME = "../lichess_elite_2022-04.pgn"
     #  Downloaded from: https://database.nikonoel.fr/
     OPENINGS = load_opening_data()
     print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
@@ -73,6 +74,10 @@ def main():
     positions = get_positions(games, N_GAMES)
     adjacency_matrix = get_adjacency_matrix(positions, OPENINGS)
     save_results(adjacency_matrix, N_GAMES)
+
+    graph = nx.from_pandas_adjacency(adjacency_matrix)
+    nx.draw(graph, with_labels=True, node_size=200, font_size=6)
+    plt.savefig(f"results/graph_{N_GAMES}.png", dpi=200)
 
 
 if __name__ == "__main__":
