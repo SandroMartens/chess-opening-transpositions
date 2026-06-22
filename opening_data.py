@@ -60,17 +60,16 @@ def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:
         "Ruy Lopez": "RL",
     }
 
-    for i, name in enumerate(openings.name):
-        for long_name, short_name in ABBREVIATIONS.items():
-            if long_name in name:
-                name = name.replace(long_name, short_name)
-        name = (
-            name.replace(" Opening", "")
-            .replace(" Variation", "")
-            .replace(" Game", "")
-            .replace(" Defense", "")
-        )
-        openings.name[i] = name
+    names = openings["name"]
+    for long_name, short_name in ABBREVIATIONS.items():
+        names = names.str.replace(long_name, short_name, regex=False)
+    names = (
+        names.str.replace(" Opening", "", regex=False)
+        .str.replace(" Variation", "", regex=False)
+        .str.replace(" Game", "", regex=False)
+        .str.replace(" Defense", "", regex=False)
+    )
+    openings["name"] = names
 
     return openings
 
