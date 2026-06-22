@@ -20,22 +20,24 @@ Pipeline steps (same order both files):
 2. `load_games(filename)` — streams games from PGN via `python-chess` (generator, not loaded fully into memory).
 3. `get_positions(games, n_games)` — per game, walks mainline, records `epd()` after each of first 36 half-moves (18 full moves) into DataFrame (rows=games, cols=ply).
 4. Graph build — `get_adjacency_matrix()` (analysis.py) or `analyze_games()` (analysis_by_position.py): edge per opening/position change.
-5. Save — `save_results()` (analysis.py only) writes CSV to `results/`; analysis_by_position.py writes GML directly in `main()`.
+5. Save — `save_results()` (analysis.py only) writes CSV to `results/`, then `analysis.py` also renders a PNG via `nx.from_pandas_adjacency` → `nx.draw` → `plt.savefig` (quick preview; Gephi still does the real layout); analysis_by_position.py writes GML directly in `main()`.
 
 ## Data dependencies
 
 - `files/*.tsv` — Lichess opening db (committed, from https://github.com/lichess-org/chess-openings).
-- `files/lichess_elite_2022-04.pgn` — game db, **not in repo** (gitignored). Download from https://database.nikonoel.fr/, place in `files/` before running either pipeline.
+- `lichess_elite_2022-04.pgn` — game db, **not in repo** (gitignored). Download from https://database.nikonoel.fr/. Path is set per script via `FILENAME` (see Running) — place the file where each script expects it before running.
 - `results/` — generated CSV/GML/Gephi output, checked in from past runs; large files.
 
 ## Running
 
-No package manifest (`requirements.txt`/`pyproject.toml`). Deps: `pandas`, `numpy`, `python-chess` (as `chess.pgn`), `networkx` (analysis_by_position.py only), `tqdm`. Scripts use `# %%` cell markers for interactive/Jupyter-style execution (e.g. VS Code), not pure CLI scripts.
+uv-managed: `pyproject.toml` + `uv.lock` + `.venv`. Deps: `pandas`, `numpy`, `python-chess` (as `chess.pgn`), `networkx`, `matplotlib`, `tqdm`. `uv add <pkg>` to add, `uv run python <file>` to run inside the venv. Scripts use `# %%` cell markers for interactive/Jupyter-style execution (e.g. VS Code), not pure CLI scripts.
 
-Run a pipeline directly:
+Run a pipeline:
+
+```sh
+uv run python analysis_by_position.py
 ```
-python analysis_by_position.py
-```
-Adjust `N_GAMES` and `FILENAME` constants in each file's `main()` to control games processed.
+
+Adjust `N_GAMES` and `FILENAME` constants in each file's `main()` to control games processed. Note: the two scripts currently point `FILENAME` at different paths (`analysis.py` → `../lichess_elite_2022-04.pgn`, `analysis_by_position.py` → `files/lichess_elite_2022-04.pgn`).
 
 `test_1.py` — profiling script (`timeit`/`line_profiler`), not a test suite. No pytest/unittest setup in repo.
