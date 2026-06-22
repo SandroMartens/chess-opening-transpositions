@@ -65,7 +65,7 @@ def save_results(adjacency_matrix: pd.DataFrame, n_games: int) -> None:
 # %%
 def main():
     """Main function"""
-    N_GAMES = 100
+    N_GAMES = 1000
     FILENAME = "../lichess_elite_2022-04.pgn"
     #  Downloaded from: https://database.nikonoel.fr/
     OPENINGS = load_opening_data()
@@ -76,7 +76,32 @@ def main():
     save_results(adjacency_matrix, N_GAMES)
 
     graph = nx.from_pandas_adjacency(adjacency_matrix)
-    nx.draw(graph, with_labels=True, node_size=200, font_size=6)
+    graph.remove_edges_from(nx.selfloop_edges(graph))
+    occurrences = adjacency_matrix.sum(axis=0)
+    # Start's only incoming edge is the artificial self-loop (see get_adjacency_matrix) -
+    # use its outgoing transitions instead, the real "games reaching Start" count
+    occurrences["Start"] = adjacency_matrix.loc["Start"].sum()
+    max_occurrences = occurrences.max()
+    # forceatlas2's node_size is a layout-space halo radius, not a pixel size -
+    # passing raw occurrence counts (up to 1000s) wrecks the physics and yields NaN positions
+    node_size_layout = {n: 0.05 * occurrences[n] / max_occurrences for n in graph}
+    pos = nx.forceatlas2_layout(
+        graph, max_iter=10_000, node_size=node_size_layout, weight="weight", seed=0
+    )
+    node_size_draw = [100 * occurrences[n] / max_occurrences for n in graph]
+
+    communities = nx.community.louvain_communities(graph, weight="weight", seed=0)
+    community_of = {n: i for i, c in enumerate(communities) for n in c}
+    node_color = [community_of[n] for n in graph]
+
+    plt.figure(figsize=(20, 20))  # figsize * dpi = output pixels
+    nx.draw_networkx_edges(
+        graph, pos, alpha=0.2, arrows=True, connectionstyle="arc3,rad=0.1"
+    )
+    nx.draw_networkx_nodes(
+        graph, pos, node_color=node_color, cmap=plt.cm.tab20, node_size=node_size_draw
+    )
+    nx.draw_networkx_labels(graph, pos, font_size=6)
     plt.savefig(f"results/graph_{N_GAMES}.png", dpi=200)
 
 
