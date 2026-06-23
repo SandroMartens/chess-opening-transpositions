@@ -8,6 +8,7 @@ import sqlite3
 from typing import Iterator
 
 import chess.pgn
+import pandas as pd
 from tqdm import tqdm
 
 from opening_data import get_opening_name, load_games, load_opening_data
@@ -127,6 +128,15 @@ def annotate_positions(db_path: str = DB_PATH) -> None:
                 con.execute(
                     "UPDATE positions SET opening_name = ? WHERE rowid = ?", (name, rowid)
                 )
+
+
+# %%
+def load_positions(db_path: str = DB_PATH) -> pd.DataFrame:
+    """Load the positions table shaped like opening_data.get_positions(): rows=games,
+    columns=ply, values=epd."""
+    with sqlite3.connect(db_path) as con:
+        long = pd.read_sql("SELECT game_id, ply, epd FROM positions", con)
+    return long.pivot(index="game_id", columns="ply", values="epd")
 
 
 # %%

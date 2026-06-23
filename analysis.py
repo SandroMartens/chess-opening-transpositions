@@ -8,13 +8,8 @@ import pandas as pd
 from numpy import int32
 from tqdm import tqdm
 
-from opening_data import (
-    find_longest_variation,
-    get_opening_name,
-    get_positions,
-    load_games,
-    load_opening_data,
-)
+from database import load_positions
+from opening_data import find_longest_variation, get_opening_name, load_opening_data
 
 
 # %%
@@ -124,17 +119,15 @@ def plot_graph(
 # %%
 def main():
     """Main function"""
-    N_GAMES = 3000
     MIN_OCCURENCES = 5
-    FILENAME = "../lichess_elite_2022-04.pgn"
-    #  Downloaded from: https://database.nikonoel.fr/
+    # Positions come from games.sqlite (see database.py), not a live pgn parse
     OPENINGS = load_opening_data()
     print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
-    games = load_games(FILENAME)
-    positions = get_positions(games, N_GAMES)
+    positions = load_positions()
+    n_games = positions.shape[0]
     adjacency_matrix = get_adjacency_matrix(positions, OPENINGS)
-    save_results(adjacency_matrix, N_GAMES)
-    plot_graph(adjacency_matrix, N_GAMES, min_occurrences=MIN_OCCURENCES)
+    save_results(adjacency_matrix, n_games)
+    plot_graph(adjacency_matrix, n_games, min_occurrences=MIN_OCCURENCES)
 
 
 if __name__ == "__main__":
