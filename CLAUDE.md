@@ -16,6 +16,7 @@ Two parallel pipelines, same load → parse → build graph → save shape:
 - `analysis_by_position.py` — newer (current `v2` work). `networkx.Graph` keyed by raw **epd position string**, writes `.gml` via `nx.write_gml`. Less lossy than name-based matrix.
 
 Pipeline steps (same order both files):
+
 1. `load_opening_data()` — reads `files/{a,b,c,d,e}.tsv` (Lichess ECO db, indexed by `epd`), concats, adds synthetic `Start` row for initial position, renames two positions (`Closed Game`, `Open Game`) to disambiguate from generic `Queen's/King's Pawn Game`. `shorten_names()` abbreviates long names (QGD, KID, RL, etc.), strips trailing "Opening"/"Variation"/"Game"/"Defense".
 2. `load_games(filename)` — streams games from PGN via `python-chess` (generator, not loaded fully into memory).
 3. `get_positions(games, n_games)` — per game, walks mainline, records `epd()` after each of first 36 half-moves (18 full moves) into DataFrame (rows=games, cols=ply).

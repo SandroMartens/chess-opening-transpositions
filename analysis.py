@@ -3,6 +3,7 @@
 # %%
 import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
 import pandas as pd
 from numpy import int32
 from tqdm import tqdm
@@ -83,15 +84,24 @@ def plot_graph(
     pos = nx.forceatlas2_layout(
         graph, max_iter=10_000, node_size=node_size_layout, weight="weight", seed=0
     )
-    node_size_draw = [100 * occurrences[n] / max_occurrences for n in graph]
+    node_size_draw = np.sqrt([1000 * occurrences[n] / max_occurrences for n in graph])
 
     communities = nx.community.louvain_communities(graph, weight="weight", seed=0)
     community_of = {n: i for i, c in enumerate(communities) for n in c}
     node_color = [community_of[n] for n in graph]
 
+    edge_width = [
+        0.2 + 10 * graph[u][v]["weight"] / max_occurrences for u, v in graph.edges()
+    ]
+
     plt.figure(figsize=(20, 20))  # figsize * dpi = output pixels
     nx.draw_networkx_edges(
-        graph, pos, alpha=0.2, arrows=True, connectionstyle="arc3,rad=0.1"
+        graph,
+        pos,
+        alpha=1,
+        arrows=True,
+        connectionstyle="arc3,rad=0.1",
+        width=edge_width,
     )
     nx.draw_networkx_nodes(
         graph, pos, node_color=node_color, cmap=plt.cm.tab20, node_size=node_size_draw
@@ -108,13 +118,14 @@ def plot_graph(
             ha="center",
             va="center",
         )
-    plt.savefig(f"results/graph_{n_games}.png", dpi=200)
+    plt.savefig(f"images/graph_{n_games}.png", dpi=200)
 
 
 # %%
 def main():
     """Main function"""
-    N_GAMES = 10000
+    N_GAMES = 3000
+    MIN_OCCURENCES = 5
     FILENAME = "../lichess_elite_2022-04.pgn"
     #  Downloaded from: https://database.nikonoel.fr/
     OPENINGS = load_opening_data()
@@ -123,7 +134,7 @@ def main():
     positions = get_positions(games, N_GAMES)
     adjacency_matrix = get_adjacency_matrix(positions, OPENINGS)
     save_results(adjacency_matrix, N_GAMES)
-    plot_graph(adjacency_matrix, N_GAMES)
+    plot_graph(adjacency_matrix, N_GAMES, min_occurrences=MIN_OCCURENCES)
 
 
 if __name__ == "__main__":
