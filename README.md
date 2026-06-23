@@ -27,7 +27,7 @@ The first order is considered solid and played very often. The second is conside
 
 ## Methology
 
-I analyzed 339,024 games between pro players from Lichess from April 2022. The opening names are the same as used in the opening explorer of Lichess. I parsed the games with `python-chess` and extracted the epd[^1] after each of the first 30 half moves[^2]. I then checked if this epd has a name. If the current position has a name that is different from the previous position, I added a transposition between the old and the new position. If it has no name, I kept the name of the last named position as current opening line.
+I analyzed 339,024 games between pro players from Lichess from April 2022. The opening names are the same as used in the opening explorer of Lichess. I parsed the games with `python-chess` and extracted the epd[^1] after each of the first 36 half moves[^2]. Parsed games and positions are cached in a local SQLite database so the pgn only needs parsing once. I then checked if this epd has a name. If the current position has a name that is different from the previous position, I added a transposition between the old and the new position. If it has no name, I kept the name of the last named position as current opening line.
 [^2]: Move of Black _or_ white.
 
 The resulting graph is visualized with `Gephi`. The layout algorithm works so that connected nodes attract and not connected nodes repell each other. After a while we get a stable configuration where groups of strongly connected nodes emerge.
