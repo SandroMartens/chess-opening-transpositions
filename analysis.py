@@ -65,7 +65,7 @@ def plot_graph(
     """Draw opening transposition graph: forceatlas2 layout, louvain community
     colors, occurrence-based node/font size. Drops openings reached by fewer
     than min_occurrences games."""
-    graph = nx.from_pandas_adjacency(adjacency_matrix)
+    graph = nx.from_pandas_adjacency(adjacency_matrix, create_using=nx.DiGraph)
     graph.remove_edges_from(nx.selfloop_edges(graph))
     occurrences = adjacency_matrix.sum(axis=0)
     # Start's only incoming edge is the artificial self-loop (see get_adjacency_matrix) -
@@ -74,14 +74,33 @@ def plot_graph(
     graph = graph.subgraph([n for n in graph if occurrences[n] >= min_occurrences])
     max_occurrences = occurrences.max()
     # forceatlas2's node_size is a layout-space halo radius, not a pixel size -
-    # passing raw occurrence counts (up to 1000s) wrecks the physics and yields NaN positions
-    node_size_layout = {n: 0.05 * occurrences[n] / max_occurrences for n in graph}
+    # passing raw occurrence counts (up to 1000s) wrecks the physics and yields NaN positions.
+    # sqrt scale matches node_size_draw's shape below, else halo underestimates
+    # mid/small nodes' drawn footprint and they overlap.
+    node_size_layout = {
+        n: 0.4 * np.sqrt(occurrences[n] / max_occurrences) for n in graph
+    }
+    # forceatlas2's attraction force only looks at outgoing edges (A[i, :]) - on a
+    # directed graph, nodes with little outgoing weight lose their pull and collapse
+    # into the center under gravity alone. Layout/communities need the symmetric view.
+    undirected = graph.to_undirected()
+    # Gephi "Edge Weight Influence" 0.5 dampens high-count edges' pull on layout -
+    # networkx has no such exponent param, so pre-transform weight for this call only
+    nx.set_edge_attributes(
+        undirected,
+        {(u, v): w**0.5 for u, v, w in undirected.edges(data="weight")},
+        "weight_sqrt",
+    )
     pos = nx.forceatlas2_layout(
-        graph, max_iter=20_000, node_size=node_size_layout, weight="weight", seed=0
+        undirected,
+        max_iter=20_000,
+        node_size=node_size_layout,
+        weight="weight_sqrt",
+        seed=0,
     )
     node_size_draw = 1000 * np.sqrt([occurrences[n] / max_occurrences for n in graph])
 
-    communities = nx.community.louvain_communities(graph, weight="weight", seed=0)
+    communities = nx.community.louvain_communities(undirected, weight="weight", seed=0)
     community_of = {n: i for i, c in enumerate(communities) for n in c}
     node_color = [community_of[n] for n in graph]
 
