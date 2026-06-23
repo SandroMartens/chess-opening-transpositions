@@ -63,24 +63,19 @@ def save_results(adjacency_matrix: pd.DataFrame, n_games: int) -> None:
 
 
 # %%
-def main():
-    """Main function"""
-    N_GAMES = 1000
-    FILENAME = "../lichess_elite_2022-04.pgn"
-    #  Downloaded from: https://database.nikonoel.fr/
-    OPENINGS = load_opening_data()
-    print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
-    games = load_games(FILENAME)
-    positions = get_positions(games, N_GAMES)
-    adjacency_matrix = get_adjacency_matrix(positions, OPENINGS)
-    save_results(adjacency_matrix, N_GAMES)
-
+def plot_graph(
+    adjacency_matrix: pd.DataFrame, n_games: int, min_occurrences: int = 5
+) -> None:
+    """Draw opening transposition graph: forceatlas2 layout, louvain community
+    colors, occurrence-based node/font size. Drops openings reached by fewer
+    than min_occurrences games."""
     graph = nx.from_pandas_adjacency(adjacency_matrix)
     graph.remove_edges_from(nx.selfloop_edges(graph))
     occurrences = adjacency_matrix.sum(axis=0)
     # Start's only incoming edge is the artificial self-loop (see get_adjacency_matrix) -
     # use its outgoing transitions instead, the real "games reaching Start" count
     occurrences["Start"] = adjacency_matrix.loc["Start"].sum()
+    graph = graph.subgraph([n for n in graph if occurrences[n] >= min_occurrences])
     max_occurrences = occurrences.max()
     # forceatlas2's node_size is a layout-space halo radius, not a pixel size -
     # passing raw occurrence counts (up to 1000s) wrecks the physics and yields NaN positions
@@ -101,8 +96,34 @@ def main():
     nx.draw_networkx_nodes(
         graph, pos, node_color=node_color, cmap=plt.cm.tab20, node_size=node_size_draw
     )
-    nx.draw_networkx_labels(graph, pos, font_size=6)
-    plt.savefig(f"results/graph_{N_GAMES}.png", dpi=200)
+    # nx.draw_networkx_labels font_size is a single scalar - loop manually for per-node scaling
+    ax = plt.gca()
+    for n in graph:
+        x, y = pos[n]
+        ax.text(
+            x,
+            y,
+            n,
+            fontsize=4 + 12 * occurrences[n] / max_occurrences,
+            ha="center",
+            va="center",
+        )
+    plt.savefig(f"results/graph_{n_games}.png", dpi=200)
+
+
+# %%
+def main():
+    """Main function"""
+    N_GAMES = 10000
+    FILENAME = "../lichess_elite_2022-04.pgn"
+    #  Downloaded from: https://database.nikonoel.fr/
+    OPENINGS = load_opening_data()
+    print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
+    games = load_games(FILENAME)
+    positions = get_positions(games, N_GAMES)
+    adjacency_matrix = get_adjacency_matrix(positions, OPENINGS)
+    save_results(adjacency_matrix, N_GAMES)
+    plot_graph(adjacency_matrix, N_GAMES)
 
 
 if __name__ == "__main__":
