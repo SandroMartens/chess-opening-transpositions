@@ -77,9 +77,9 @@ def plot_graph(
     # passing raw occurrence counts (up to 1000s) wrecks the physics and yields NaN positions
     node_size_layout = {n: 0.05 * occurrences[n] / max_occurrences for n in graph}
     pos = nx.forceatlas2_layout(
-        graph, max_iter=10_000, node_size=node_size_layout, weight="weight", seed=0
+        graph, max_iter=20_000, node_size=node_size_layout, weight="weight", seed=0
     )
-    node_size_draw = np.sqrt([1000 * occurrences[n] / max_occurrences for n in graph])
+    node_size_draw = 1000 * np.sqrt([occurrences[n] / max_occurrences for n in graph])
 
     communities = nx.community.louvain_communities(graph, weight="weight", seed=0)
     community_of = {n: i for i, c in enumerate(communities) for n in c}
@@ -119,11 +119,12 @@ def plot_graph(
 # %%
 def main():
     """Main function"""
-    MIN_OCCURENCES = 5
+    N_GAMES = 10000
+    MIN_OCCURENCES = 15
     # Positions come from games.sqlite (see database.py), not a live pgn parse
     OPENINGS = load_opening_data()
     print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
-    positions = load_positions()
+    positions = load_positions(n_games=N_GAMES)
     n_games = positions.shape[0]
     adjacency_matrix = get_adjacency_matrix(positions, OPENINGS)
     save_results(adjacency_matrix, n_games)

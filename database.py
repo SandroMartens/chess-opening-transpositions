@@ -72,7 +72,9 @@ def extract_positions(pgn: str) -> list[tuple[int, str]]:
     game = chess.pgn.read_game(io.StringIO(pgn))
     if game is None:
         raise RuntimeError("could not parse stored pgn")
-    return [(move.board().ply(), move.board().epd()) for move in list(game.mainline())[:36]]
+    return [
+        (move.board().ply(), move.board().epd()) for move in list(game.mainline())[:36]
+    ]
 
 
 # %%
@@ -126,23 +128,29 @@ def annotate_positions(db_path: str = DB_PATH) -> None:
             name = get_opening_name(epd, openings)
             if name is not None:
                 con.execute(
-                    "UPDATE positions SET opening_name = ? WHERE rowid = ?", (name, rowid)
+                    "UPDATE positions SET opening_name = ? WHERE rowid = ?",
+                    (name, rowid),
                 )
 
 
 # %%
-def load_positions(db_path: str = DB_PATH) -> pd.DataFrame:
+def load_positions(db_path: str = DB_PATH, n_games: int | None = None) -> pd.DataFrame:
     """Load the positions table shaped like opening_data.get_positions(): rows=games,
-    columns=ply, values=epd."""
+    columns=ply, values=epd. Pass n_games to limit to the first n games."""
+    query = "SELECT game_id, ply, epd FROM positions"
+    params: tuple = ()
+    if n_games is not None:
+        query += " WHERE game_id IN (SELECT rowid FROM games LIMIT ?)"
+        params = (n_games,)
     with sqlite3.connect(db_path) as con:
-        long = pd.read_sql("SELECT game_id, ply, epd FROM positions", con)
+        long = pd.read_sql(query, con, params=params)
     return long.pivot(index="game_id", columns="ply", values="epd")
 
 
 # %%
 def main():
     """Main function"""
-    N_GAMES = 3000
+    N_GAMES = 10000
     FILENAME = "../lichess_elite_2022-04.pgn"
     games = load_games(FILENAME)
     write_games(games, N_GAMES)
