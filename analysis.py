@@ -12,6 +12,7 @@ from database import load_positions
 from opening_data import find_longest_variation, get_opening_name, load_opening_data
 
 MIN_OCCURRENCES = 10  # also used by notebooks/node2vec_umap_embedding.ipynb
+N_GAMES = 9999
 
 
 # %%
@@ -90,16 +91,20 @@ def get_communities(undirected: nx.Graph) -> dict[str, int]:
 
 
 # %%
-def plot_graph(
-    adjacency_matrix: pd.DataFrame, n_games: int, min_occurrences: int = 5
+def draw_graph(
+    graph: nx.DiGraph,
+    undirected: nx.Graph,
+    occurrences: pd.Series,
+    max_occurrences: float,
+    community_of: dict[str, int],
+    filename: str,
+    show_labels: bool = True,
 ) -> None:
-    """Draw opening transposition graph: forceatlas2 layout, louvain community
-    colors, occurrence-based node/font size. Drops openings reached by fewer
-    than min_occurrences games."""
-    graph, undirected, occurrences = build_filtered_graph(
-        adjacency_matrix, min_occurrences
-    )
-    max_occurrences = occurrences.max()
+    """Forceatlas2 layout + louvain-colored draw of graph/undirected, sized
+    relative to max_occurrences. Shared by plot_graph() and
+    plot_top_communities(). community_of comes from the caller (not
+    recomputed here) so coloring stays consistent with whatever partition
+    the caller used to pick/rank this graph in the first place."""
     # forceatlas2's node_size is a layout-space halo radius, not a pixel size -
     # passing raw occurrence counts (up to 1000s) wrecks the physics and yields NaN positions.
     # sqrt scale matches node_size_draw's shape below, else halo underestimates
@@ -116,18 +121,17 @@ def plot_graph(
     )
     pos = nx.forceatlas2_layout(
         undirected,
-        max_iter=20_000,
+        max_iter=10_000,
         node_size=node_size_layout,
         weight="weight_sqrt",
         seed=0,
     )
     node_size_draw = 1000 * np.sqrt([occurrences[n] / max_occurrences for n in graph])
 
-    community_of = get_communities(undirected)
     node_color = [community_of[n] for n in graph]
 
     edge_width = [
-        0.2 + 10 * graph[u][v]["weight"] / max_occurrences for u, v in graph.edges()
+        0.1 + 10 * graph[u][v]["weight"] / max_occurrences for u, v in graph.edges()
     ]
 
     plt.figure(figsize=(20, 20))  # figsize * dpi = output pixels
@@ -136,31 +140,104 @@ def plot_graph(
         pos,
         alpha=1,
         arrows=True,
+        arrowsize=5,
         connectionstyle="arc3,rad=0.1",
         width=edge_width,
     )
     nx.draw_networkx_nodes(
         graph, pos, node_color=node_color, cmap=plt.cm.tab20, node_size=node_size_draw
     )
-    # nx.draw_networkx_labels font_size is a single scalar - loop manually for per-node scaling
-    ax = plt.gca()
-    for n in graph:
-        x, y = pos[n]
-        ax.text(
-            x,
-            y,
-            n,
-            fontsize=4 + 12 * occurrences[n] / max_occurrences,
-            ha="center",
-            va="center",
+    if show_labels:
+        # nx.draw_networkx_labels font_size is a single scalar - loop manually for per-node scaling
+        ax = plt.gca()
+        for n in graph:
+            x, y = pos[n]
+            ax.text(
+                x,
+                y,
+                n,
+                fontsize=4 + 12 * occurrences[n] / max_occurrences,
+                ha="center",
+                va="center",
+            )
+    plt.savefig(filename, dpi=200)
+    plt.close()
+
+
+# %%
+def plot_graph(
+    adjacency_matrix: pd.DataFrame,
+    n_games: int,
+    min_occurrences: int = 5,
+    show_labels: bool = True,
+) -> None:
+    """Draw opening transposition graph: forceatlas2 layout, louvain community
+    colors, occurrence-based node/font size. Drops openings reached by fewer
+    than min_occurrences games. Self-contained convenience wrapper around
+    draw_graph() -- main() builds the graph itself and calls draw_graph()
+    directly instead, to share it with plot_top_communities() without
+    building twice."""
+    graph, undirected, occurrences = build_filtered_graph(
+        adjacency_matrix, min_occurrences
+    )
+    max_occurrences = occurrences.max()
+    community_of = get_communities(undirected)
+    suffix = "" if show_labels else "_no_labels"
+    draw_graph(
+        graph,
+        undirected,
+        occurrences,
+        max_occurrences,
+        community_of,
+        f"images/graph_{n_games}{suffix}.png",
+        show_labels,
+    )
+
+
+# %%
+def plot_top_communities(
+    graph: nx.DiGraph,
+    undirected: nx.Graph,
+    occurrences: pd.Series,
+    community_of: dict[str, int],
+    n_games: int,
+    top_n: int = 6,
+    show_labels: bool = True,
+) -> None:
+    """Zoom into the top_n largest Louvain communities (ranked by total
+    occurrences of their member nodes) and re-layout/draw each individually --
+    mirrors the manual per-color Gephi workflow in README.md's 'Detail view'.
+    Takes the same graph/community_of as plot_graph() (see its docstring) so
+    every zoomed community comes out colored consistently with the partition
+    that ranked/selected it, and main() doesn't rebuild the graph twice."""
+    max_occurrences = occurrences.max()
+    members_by_community = pd.Series(community_of).groupby(community_of).groups
+
+    ranked = sorted(
+        members_by_community.values(),
+        key=lambda members: occurrences[members].sum(),
+        reverse=True,
+    )
+
+    for rank, members in enumerate(ranked[:top_n], start=1):
+        sub_graph = graph.subgraph(members)
+        # .copy(): draw_graph() mutates edge attrs (weight_sqrt) on `undirected` -
+        # a bare subgraph() view would write those back into the shared parent graph
+        sub_undirected = undirected.subgraph(members).copy()
+        draw_graph(
+            sub_graph,
+            sub_undirected,
+            occurrences,
+            max_occurrences,
+            community_of,
+            f"images/graph_{n_games}_community_{rank}.png",
+            show_labels,
         )
-    plt.savefig(f"images/graph_{n_games}.png", dpi=200)
 
 
 # %%
 def main():
     """Main function"""
-    N_GAMES = 10000
     # Positions come from games.sqlite (see database.py), not a live pgn parse
     OPENINGS = load_opening_data()
     print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
@@ -168,7 +245,28 @@ def main():
     n_games = positions.shape[0]
     adjacency_matrix = get_adjacency_matrix(positions, OPENINGS)
     save_results(adjacency_matrix, n_games)
-    plot_graph(adjacency_matrix, n_games, min_occurrences=MIN_OCCURRENCES)
+
+    # built once, shared below - avoids rebuilding the graph and re-running
+    # Louvain twice for the same adjacency_matrix (draw_graph() called
+    # directly here instead of via plot_graph(), which would rebuild again)
+    graph, undirected, occurrences = build_filtered_graph(
+        adjacency_matrix, MIN_OCCURRENCES
+    )
+    community_of = get_communities(undirected)
+    max_occurrences = occurrences.max()
+
+    draw_graph(
+        graph,
+        undirected,
+        occurrences,
+        max_occurrences,
+        community_of,
+        f"images/graph_{n_games}_no_labels.png",
+        show_labels=False,
+    )
+    plot_top_communities(
+        graph, undirected, occurrences, community_of, n_games, show_labels=True
+    )
 
 
 if __name__ == "__main__":

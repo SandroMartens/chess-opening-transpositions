@@ -1,4 +1,3 @@
-
 # Chess openings
 
 ## Idea
@@ -9,19 +8,19 @@ For example, there are two move orders to reach the Queen's Gambit:
 
 ### Main Line
 
-Move | Opening Name
---- | ---
-1\. d4 | Queen's Pawn Game
-1\. ... d5 | Closed Game
-2\. c4 | Queen's Gambit
+| Move       | Opening Name      |
+| ---------- | ----------------- |
+| 1\. d4     | Queen's Pawn Game |
+| 1\. ... d5 | Closed Game       |
+| 2\. c4     | Queen's Gambit    |
 
 ### Transposition from English Opening
 
-Move | Opening Name
---- | ---
-1\. c4 | English Opening
-1\. ... d5 | Anglo-Scandinavian Defense
-2\. d4 | Queen's Gambit
+| Move       | Opening Name               |
+| ---------- | -------------------------- |
+| 1\. c4     | English Opening            |
+| 1\. ... d5 | Anglo-Scandinavian Defense |
+| 2\. d4     | Queen's Gambit             |
 
 The first order is considered solid and played very often. The second is considered unsound and therefore (almost) not played by pro players. If we analyze many chess games, we can build a graph were each node is a known opening position and edges are transpositions between openings (or opening variants).
 

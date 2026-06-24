@@ -150,7 +150,7 @@ def load_positions(db_path: str = DB_PATH, n_games: int | None = None) -> pd.Dat
 # %%
 def main():
     """Main function"""
-    N_GAMES = 10000
+    N_GAMES = 50000
     FILENAME = "../lichess_elite_2022-04.pgn"
     games = load_games(FILENAME)
     write_games(games, N_GAMES)
