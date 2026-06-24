@@ -11,8 +11,8 @@ from tqdm import tqdm
 from database import load_positions
 from opening_data import find_longest_variation, get_opening_name, load_opening_data
 
-MIN_OCCURRENCES = 10  # also used by notebooks/node2vec_umap_embedding.ipynb
-N_GAMES = 9999
+MIN_OCCURRENCES = 15  # also used by notebooks/node2vec_umap_embedding.ipynb
+N_GAMES = 20000
 
 
 # %%
@@ -207,7 +207,7 @@ def plot_top_communities(
     occurrences: pd.Series,
     community_of: dict[str, int],
     n_games: int,
-    top_n: int = 6,
+    top_n: int = 8,
     show_labels: bool = True,
 ) -> None:
     """Zoom into the top_n largest Louvain communities (ranked by total
