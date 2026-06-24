@@ -39,15 +39,16 @@ To get the colors I used the modularity algorithm. Modularity is a measure of ho
 
 First we see the entire graph. We can clearly see a few very distinct groups and some groups that are very similar and not distinguishable. But there is also a lot of chaos. There are 2479 nodes total, connected by 6503 edges.
 Each color represents one or more opening families:
-Color | Openings
---- | ---
-Orange, Yellow | Queen's Pawn: Queen's Gambit, Other Queen's Pawn Games
-Green | Indian, Grünfeld, Benoni Defense(s)
-Red | Zukertort, English, Réti Opening
-Blue | King's Pawn: Pirc, Scandinavian, French, Caro-Kann, Alekhine
-Purple | King's Pawn: Scotch, Italian, Russian, King's Gambit, Ruy Lopez
-Turquoise | Scicilian Defense
-Grey | Noise, unregular openings, weird gambits
+
+| Color          | Openings                                                        |
+| -------------- | --------------------------------------------------------------- |
+| Orange, Yellow | Queen's Pawn: Queen's Gambit, Other Queen's Pawn Games          |
+| Green          | Indian, Grünfeld, Benoni Defense(s)                             |
+| Red            | Zukertort, English, Réti Opening                                |
+| Blue           | King's Pawn: Pirc, Scandinavian, French, Caro-Kann, Alekhine    |
+| Purple         | King's Pawn: Scotch, Italian, Russian, King's Gambit, Ruy Lopez |
+| Turquoise      | Scicilian Defense                                               |
+| Grey           | Noise, unregular openings, weird gambits                        |
 
 ![Complete_graph](/images/complete.png)
 
