@@ -145,7 +145,13 @@ def draw_graph(
         width=edge_width,
     )
     nx.draw_networkx_nodes(
-        graph, pos, node_color=node_color, cmap=plt.cm.tab20, node_size=node_size_draw
+        graph,
+        pos,
+        node_color=node_color,
+        cmap=plt.cm.tab20,
+        vmin=0,
+        vmax=max(community_of.values()),
+        node_size=node_size_draw,
     )
     if show_labels:
         # nx.draw_networkx_labels font_size is a single scalar - loop manually for per-node scaling
