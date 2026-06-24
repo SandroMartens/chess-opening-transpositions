@@ -6,9 +6,13 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "chess>=1.11.2",
+    "ipykernel",
     "matplotlib>=3.11.0",
+    "nbformat>=5.10.4",
     "networkx>=3.6.1",
-    "numpy>=2.5.0",
+    "numpy>=2.4,<2.5",
     "pandas>=3.0.3",
+    "plotly",
     "tqdm>=4.68.3",
+    "umap-learn",
 ]

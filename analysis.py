@@ -11,6 +11,8 @@ from tqdm import tqdm
 from database import load_positions
 from opening_data import find_longest_variation, get_opening_name, load_opening_data
 
+MIN_OCCURRENCES = 10  # also used by notebooks/node2vec_umap_embedding.ipynb
+
 
 # %%
 def get_adjacency_matrix(
@@ -59,12 +61,12 @@ def save_results(adjacency_matrix: pd.DataFrame, n_games: int) -> None:
 
 
 # %%
-def plot_graph(
-    adjacency_matrix: pd.DataFrame, n_games: int, min_occurrences: int = 5
-) -> None:
-    """Draw opening transposition graph: forceatlas2 layout, louvain community
-    colors, occurrence-based node/font size. Drops openings reached by fewer
-    than min_occurrences games."""
+def build_filtered_graph(
+    adjacency_matrix: pd.DataFrame, min_occurrences: int
+) -> tuple[nx.DiGraph, nx.Graph, pd.Series]:
+    """Build the self-loop-free directed graph and its undirected view, both
+    dropping openings reached by fewer than min_occurrences games. Shared by
+    plot_graph() and notebooks/node2vec_umap_embedding.ipynb."""
     graph = nx.from_pandas_adjacency(adjacency_matrix, create_using=nx.DiGraph)
     graph.remove_edges_from(nx.selfloop_edges(graph))
     occurrences = adjacency_matrix.sum(axis=0)
@@ -72,6 +74,31 @@ def plot_graph(
     # use its outgoing transitions instead, the real "games reaching Start" count
     occurrences["Start"] = adjacency_matrix.loc["Start"].sum()
     graph = graph.subgraph([n for n in graph if occurrences[n] >= min_occurrences])
+    # forceatlas2's attraction force only looks at outgoing edges (A[i, :]) - on a
+    # directed graph, nodes with little outgoing weight lose their pull and collapse
+    # into the center under gravity alone. Layout/communities need the symmetric view.
+    undirected = graph.to_undirected()
+    return graph, undirected, occurrences
+
+
+# %%
+def get_communities(undirected: nx.Graph) -> dict[str, int]:
+    """Louvain community id per node. Shared by plot_graph() and
+    notebooks/node2vec_umap_embedding.ipynb so both color by the same groups."""
+    communities = nx.community.louvain_communities(undirected, weight="weight", seed=0)
+    return {n: i for i, c in enumerate(communities) for n in c}
+
+
+# %%
+def plot_graph(
+    adjacency_matrix: pd.DataFrame, n_games: int, min_occurrences: int = 5
+) -> None:
+    """Draw opening transposition graph: forceatlas2 layout, louvain community
+    colors, occurrence-based node/font size. Drops openings reached by fewer
+    than min_occurrences games."""
+    graph, undirected, occurrences = build_filtered_graph(
+        adjacency_matrix, min_occurrences
+    )
     max_occurrences = occurrences.max()
     # forceatlas2's node_size is a layout-space halo radius, not a pixel size -
     # passing raw occurrence counts (up to 1000s) wrecks the physics and yields NaN positions.
@@ -80,10 +107,6 @@ def plot_graph(
     node_size_layout = {
         n: 0.4 * np.sqrt(occurrences[n] / max_occurrences) for n in graph
     }
-    # forceatlas2's attraction force only looks at outgoing edges (A[i, :]) - on a
-    # directed graph, nodes with little outgoing weight lose their pull and collapse
-    # into the center under gravity alone. Layout/communities need the symmetric view.
-    undirected = graph.to_undirected()
     # Gephi "Edge Weight Influence" 0.5 dampens high-count edges' pull on layout -
     # networkx has no such exponent param, so pre-transform weight for this call only
     nx.set_edge_attributes(
@@ -100,8 +123,7 @@ def plot_graph(
     )
     node_size_draw = 1000 * np.sqrt([occurrences[n] / max_occurrences for n in graph])
 
-    communities = nx.community.louvain_communities(undirected, weight="weight", seed=0)
-    community_of = {n: i for i, c in enumerate(communities) for n in c}
+    community_of = get_communities(undirected)
     node_color = [community_of[n] for n in graph]
 
     edge_width = [
@@ -139,7 +161,6 @@ def plot_graph(
 def main():
     """Main function"""
     N_GAMES = 10000
-    MIN_OCCURENCES = 15
     # Positions come from games.sqlite (see database.py), not a live pgn parse
     OPENINGS = load_opening_data()
     print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
@@ -147,7 +168,7 @@ def main():
     n_games = positions.shape[0]
     adjacency_matrix = get_adjacency_matrix(positions, OPENINGS)
     save_results(adjacency_matrix, n_games)
-    plot_graph(adjacency_matrix, n_games, min_occurrences=MIN_OCCURENCES)
+    plot_graph(adjacency_matrix, n_games, min_occurrences=MIN_OCCURRENCES)
 
 
 if __name__ == "__main__":
