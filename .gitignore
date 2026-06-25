@@ -9,3 +9,4 @@ CLAUDE.original.md
 results/
 images/graph_*.png
 docs/superpowers/
+.claude/skills

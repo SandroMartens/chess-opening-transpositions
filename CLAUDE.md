@@ -56,3 +56,5 @@ uv run python analysis_by_position.py
 Adjust `N_GAMES` and `FILENAME`/`db_path` constants in each file's `main()` to control games processed. Note: `analysis_by_position.py` and `database.py` currently point `FILENAME` at different paths (`files/lichess_elite_2022-04.pgn` vs `../lichess_elite_2022-04.pgn`).
 
 `test_1.py` — profiling script (`timeit`/`line_profiler`), not test suite. No pytest/unittest setup in repo (plain `assert` files under `tests/`, run directly via `uv run python tests/test_*.py`).
+
+Notebooks under `notebooks/` are stripped of outputs/metadata on commit via `nbstripout` (dev dep, filter declared in `.gitattributes`). The filter itself lives in local `.git/config`, not shared by the clone — run `uv run nbstripout --install --attributes .gitattributes` once per clone after `uv sync`.

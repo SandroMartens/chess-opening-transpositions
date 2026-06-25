@@ -18,3 +18,8 @@ dependencies = [
     "tqdm>=4.68.3",
     "umap-learn",
 ]
+
+[dependency-groups]
+dev = [
+    "nbstripout>=0.9.1",
+]
