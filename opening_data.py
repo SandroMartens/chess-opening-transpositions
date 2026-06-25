@@ -1,11 +1,44 @@
 """Load Lichess opening data and PGN games, shared by analysis.py and analysis_by_position.py"""
 
 import io
+import os
 from typing import Iterator, Optional
 
 import chess.pgn
 import pandas as pd
 from tqdm import tqdm
+
+
+def _starting_position() -> pd.DataFrame:
+    """Synthetic row for the initial position, absent from both raw sources (tsv and the HF
+    parquet dataset) but required as the self-loop anchor in analysis.get_adjacency_matrix."""
+    return pd.DataFrame.from_dict(
+        data={
+            "name": ["Start"],
+            "epd": ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -"],
+            "pgn": None,
+            "eco": None,
+        },
+        orient="columns",
+    ).set_index("epd")
+
+
+def _finalize_openings(openings: pd.DataFrame) -> pd.DataFrame:
+    """Shared postprocessing for both loaders: add the Start row, disambiguate two
+    positions, then abbreviate names. Keeps the two raw sources interchangeable."""
+    openings = pd.concat([openings, _starting_position()])
+
+    # Rename position after 1. d4 d5 to get some differentiating to other 1. d4 openings
+    openings.loc[
+        "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq -", "name"
+    ] = "Closed Game"
+
+    # King's Pawn Game -> Open Game, because later we rename King's Pawn Game to King's Pawn Game
+    openings.loc[
+        "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -", "name"
+    ] = "Open Game"
+
+    return shorten_names(openings)
 
 
 def load_opening_data() -> pd.DataFrame:
@@ -16,33 +49,31 @@ def load_opening_data() -> pd.DataFrame:
     ECO_C = pd.read_csv("files/c.tsv", sep="\t", index_col="epd")
     ECO_D = pd.read_csv("files/d.tsv", sep="\t", index_col="epd")
     ECO_E = pd.read_csv("files/e.tsv", sep="\t", index_col="epd")
-    STARTING_POSITION = pd.DataFrame.from_dict(
-        data={
-            "name": ["Start"],
-            "epd": ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -"],
-            "pgn": None,
-            "eco": None,
-        },
-        orient="columns",
-    ).set_index("epd")
 
-    OPENINGS = pd.concat([eco_a, ECO_B, ECO_C, ECO_D, ECO_E, STARTING_POSITION]).drop(
-        columns=["uci"]
-    )
+    OPENINGS = pd.concat([eco_a, ECO_B, ECO_C, ECO_D, ECO_E]).drop(columns=["uci"])
 
-    # Rename position after 1. d4 d5 to get some differentiating to other 1. d4 openings
-    OPENINGS.loc[
-        "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq -", "name"
-    ] = "Closed Game"
+    return _finalize_openings(OPENINGS)
 
-    # King's Pawn Game -> Open Game, because later we rename King's Pawn Game to King's Pawn Game
-    OPENINGS.loc[
-        "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -", "name"
-    ] = "Open Game"
 
-    OPENINGS = shorten_names(OPENINGS)
+def load_opening_data_from_parquet(
+    cache_path: str = "chess_openings_hf.parquet",
+) -> pd.DataFrame:
+    """Alternative to load_opening_data(): same epd/name/pgn/eco fields, sourced from
+    https://huggingface.co/datasets/Lichess/chess-openings instead of files/*.tsv. That
+    dataset is parquet-only and 226MB (includes a 512x512 img column we don't need), so the
+    first call downloads it and caches it at cache_path (gitignored); later calls read the
+    local cache instead of re-downloading."""
+    if os.path.exists(cache_path):
+        openings = pd.read_parquet(cache_path)
+    else:
+        openings = pd.read_parquet(
+            "hf://datasets/Lichess/chess-openings/data/train-00000-of-00001.parquet"
+        )
+        openings.to_parquet(cache_path)
 
-    return OPENINGS
+    openings = openings.drop(columns=["img", "uci", "eco-volume"]).set_index("epd")
+
+    return _finalize_openings(openings)
 
 
 def shorten_names(openings: pd.DataFrame) -> pd.DataFrame:

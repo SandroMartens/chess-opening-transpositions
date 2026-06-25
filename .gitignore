@@ -1,5 +1,6 @@
 lichess_elite_2022-04.pgn
 games.sqlite
+chess_openings_hf.parquet
 test.*
 test_1.*
 .vscode

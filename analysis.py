@@ -9,10 +9,15 @@ from numpy import int32
 from tqdm import tqdm
 
 from database import load_positions
-from opening_data import find_longest_variation, get_opening_name, load_opening_data
+from opening_data import (
+    find_longest_variation,
+    get_opening_name,
+    load_opening_data,
+    load_opening_data_from_parquet,
+)
 
-MIN_OCCURRENCES = 15  # also used by notebooks/node2vec_umap_embedding.ipynb
-N_GAMES = 20000
+MIN_OCCURRENCES = 10  # also used by notebooks/node2vec_umap_embedding.ipynb
+N_GAMES = 10000
 
 
 # %%
@@ -245,7 +250,13 @@ def plot_top_communities(
 def main():
     """Main function"""
     # Positions come from games.sqlite (see database.py), not a live pgn parse
-    OPENINGS = load_opening_data()
+    try:
+        OPENINGS = load_opening_data_from_parquet()
+    except Exception as e:
+        # Network down, HF schema drift, or a corrupt local cache - all unrelated to
+        # whether the pipeline can run at all, so fall back to the offline tsv source.
+        print(f"load_opening_data_from_parquet() failed ({e}), falling back to tsv")
+        OPENINGS = load_opening_data()
     print(f"Longest line: {find_longest_variation(OPENINGS)} halfmoves")
     positions = load_positions(n_games=N_GAMES)
     n_games = positions.shape[0]
@@ -269,6 +280,15 @@ def main():
         community_of,
         f"images/graph_{n_games}_no_labels.png",
         show_labels=False,
+    )
+
+    draw_graph(
+        graph,
+        undirected,
+        occurrences,
+        max_occurrences,
+        community_of,
+        f"images/graph_{n_games}_labels.png",
     )
     plot_top_communities(
         graph, undirected, occurrences, community_of, n_games, show_labels=True
